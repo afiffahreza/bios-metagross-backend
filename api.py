@@ -99,9 +99,9 @@ async def create_project(project: ProjectCreate):
     res = {
         "id": id,
         "name": project_dict['name'],
-        "exp": EXP,  # KBS
-        "minlevel": MIN_LEVEL,  # KBS
-        "payment": PAYMENT,  # KBS
+        "exp": engine.EXP,  # KBS
+        "minlevel": engine.MIN_LEVEL,  # KBS
+        "payment": engine.PAYMENT,  # KBS
         "description": project_dict['description'],
         "jenis": project_dict['jenis'],
         "waktu": project_dict['waktu'],

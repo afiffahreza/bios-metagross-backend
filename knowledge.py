@@ -56,12 +56,13 @@ class Requirements(Fact):
 # n_req=val add extra_cost=val*100000
 
 
-EXP = 0
-MIN_LEVEL = 0
-PAYMENT = 0
-
-
 class ProjectCost(KnowledgeEngine):
+    def __init__(self):
+        super().__init__()
+        self.EXP = 0
+        self.MIN_LEVEL = 0
+        self.PAYMENT = 0
+
     @DefFacts()
     def _declare_initial_fact(self, tipe, tech, time, prototipe, n_req):
         yield Fact(tipe=tipe, time=time, tech=tech, prototipe=prototipe, n_req=n_req)
@@ -184,9 +185,9 @@ class ProjectCost(KnowledgeEngine):
         final_cost = cost*(1+total_raise/100) + n_req*(0.1)
         # print(f'{total_raise} {exp} {final_cost}')
         # return {level, exp, final_cost}
-        global EXP
-        global MIN_LEVEL
-        global PAYMENT
-        EXP = exp
-        MIN_LEVEL = level
-        PAYMENT = final_cost
+        # global EXP
+        # global MIN_LEVEL
+        # global PAYMENT
+        self.EXP = exp
+        self.MIN_LEVEL = level
+        self.PAYMENT = final_cost
