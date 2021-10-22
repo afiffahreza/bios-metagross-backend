@@ -96,7 +96,7 @@ async def create_project(project: ProjectCreate):
     engine.reset(tipe=project_dict['jenis'], time=project_dict['waktu'], tech=project_dict['tools'],
                  prototipe=project_dict['prototipe'], n_req=project_dict['requirement'])
     engine.run()
-    print(EXP, MIN_LEVEL, PAYMENT)
+    # print(EXP, MIN_LEVEL, PAYMENT)
 
     res = {
         "id": id,
