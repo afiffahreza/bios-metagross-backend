@@ -56,109 +56,137 @@ class Requirements(Fact):
 # n_req=val add extra_cost=val*100000
 
 
+EXP = 0
+MIN_LEVEL = 0
+PAYMENT = 0
+
+
 class ProjectCost(KnowledgeEngine):
     @DefFacts()
-    def _declare_initial_fact(self, tipe, tech, time, proto, n_req):
-        yield Fact(tipe=tipe, time=time, tech=tech, proto=proto, n_req=n_req)
+    def _declare_initial_fact(self, tipe, tech, time, prototipe, n_req):
+        yield Fact(tipe=tipe, time=time, tech=tech, prototipe=prototipe, n_req=n_req)
 
     @Rule(Fact(tipe='mobile'))
     def mobile_type(self):
         self.declare(Fact(est_time=4))
-        print('mobile')
+        self.declare(Fact(q1=True))
+        self.declare(Fact(cost=2000000))
 
     @Rule(Fact(tipe='web'))
     def web_type(self):
         self.declare(Fact(est_time=5))
-        print('web')
+        self.declare(Fact(q1=True))
+        self.declare(Fact(cost=4000000))
 
     @Rule(Fact(tipe='ai'))
     def ai_type(self):
         self.declare(Fact(est_time=8))
-        print('ai')
+        self.declare(Fact(q1=True))
+        self.declare(Fact(cost=3000000))
 
     @Rule(Fact(tipe='design'))
     def design_type(self):
         self.declare(Fact(est_time=2))
+        self.declare(Fact(q1=True))
+        self.declare(Fact(cost=200000))
 
-    @Rule(Fact(tech='flutter'), Fact(tipe=MATCH.tipe))
-    def flutter_tech(self, tipe):
+    @Rule(Fact(tech='flutter'), Fact(q1=True))
+    def flutter_tech(self):
         self.declare(Fact(raise_tech=10))
         self.declare(Fact(exp=10))
+        self.declare(Fact(q2=True))
 
-    @Rule(Fact(tech='javascript'), Fact(tipe=MATCH.tipe))
-    def javascript_tech(self, tipe):
+    @Rule(Fact(tech='javascript'), Fact(q1=True))
+    def javascript_tech(self):
         self.declare(Fact(raise_tech=10))
         self.declare(Fact(exp=10))
+        self.declare(Fact(q2=True))
 
-    @Rule(Fact(tech='python'), Fact(tipe=MATCH.tipe))
-    def python_tech(self, tipe):
+    @Rule(Fact(tech='python'), Fact(q1=True))
+    def python_tech(self):
         self.declare(Fact(raise_tech=20))
         self.declare(Fact(exp=10))
+        self.declare(Fact(q2=True))
 
-    @Rule(Fact(tech='rust'), Fact(tipe=MATCH.tipe))
-    def rust_tech(self, tipe):
+    @Rule(Fact(tech='rust'), Fact(q1=True))
+    def rust_tech(self):
         self.declare(Fact(raise_tech=40))
         self.declare(Fact(exp=10))
+        self.declare(Fact(q2=True))
 
-    @Rule(Fact(tech='golang'), Fact(tipe=MATCH.tipe))
-    def golang_tech(self, tipe):
+    @Rule(Fact(tech='golang'), Fact(q1=True))
+    def golang_tech(self):
         self.declare(Fact(raise_tech=10))
         self.declare(Fact(exp=10))
+        self.declare(Fact(q2=True))
 
-    @Rule(Fact(tech='kotlin'), Fact(tipe=MATCH.tipe))
-    def kotlin_tech(self, tipe):
+    @Rule(Fact(tech='kotlin'), Fact(q1=True))
+    def kotlin_tech(self):
         self.declare(Fact(raise_tech=15))
         self.declare(Fact(exp=10))
+        self.declare(Fact(q2=True))
 
     @Rule(
         Fact(time=MATCH.time),
         Fact(est_time=MATCH.est_time),
-        TEST(lambda time, est_time: time > est_time)
+        TEST(lambda time, est_time: time > est_time),
+        Fact(q2=True)
     )
     def time_gt(self, time, est_time):
         self.declare(Fact(raise_time=0))
+        self.declare(Fact(q3=True))
 
     @Rule(
         Fact(time=MATCH.time),
         Fact(est_time=MATCH.est_time),
-        TEST(lambda time, est_time: time < est_time)
+        TEST(lambda time, est_time: time < est_time),
+        Fact(q2=True)
     )
     def time_lt(self, time, est_time):
         self.declare(Fact(raise_time=20))
+        self.declare(Fact(q3=True))
 
     @Rule(
         Fact(time=MATCH.time),
         Fact(est_time=MATCH.est_time),
-        TEST(lambda time, est_time: time == est_time)
+        TEST(lambda time, est_time: time == est_time),
+        Fact(q2=True)
     )
     def time_eq(self, time, est_time, raise_tech):
         self.declare(Fact(raise_time=10))
+        self.declare(Fact(q3=True))
 
-    @Rule(Fact(prototipe='ada'))
+    @Rule(Fact(prototipe='ada'), Fact(q3=True))
     def prototipe_ada(self):
-        self.declare(reduce_cost=5)
+        self.declare(Fact(reduce_cost=5))
+        self.declare(Fact(q4=True))
+        # print('q3')
 
-    @Rule(Fact(prototipe='tidak'))
+    @Rule(Fact(prototipe='tidak'), Fact(q3=True))
     def prototipe_tidak(self):
-        self.declare(reduce_cost=0)
+        self.declare(Fact(reduce_cost=0))
+        self.declare(Fact(q4=True))
 
     @Rule(
         Fact(n_req=MATCH.n_req),
         TEST(lambda n_req: n_req > 0),
+        Fact(q4=True),
+        Fact(raise_time=MATCH.raise_time),
+        Fact(raise_tech=MATCH.raise_tech),
+        Fact(exp=MATCH.exp),
+        Fact(reduce_cost=MATCH.reduce_cost),
+        Fact(cost=MATCH.cost)
         # Fact(reduce_cost=MATCH.reduce_cost)
     )
-    def n_requirement(self, n_req):
-        # self.declare(extra_cost=10*n_req)
-        # print('mantapS')
-        # print(self.strategy)
-        # print(self.facts)
-        # print(self.facts)
-
-        for f in self.facts:
-            print(f)
-
-
-engine = ProjectCost()
-engine.reset(tipe='ai', time=20, tech='flutter', proto='ada', n_req=10)
-engine.run()
-# print(engine.result)
+    def n_requirement(self, n_req, raise_time, raise_tech, exp, reduce_cost, cost):
+        total_raise = raise_tech + raise_time - reduce_cost
+        level = exp*10 + n_req
+        final_cost = cost*(1+total_raise/100) + n_req*(0.1)
+        # print(f'{total_raise} {exp} {final_cost}')
+        # return {level, exp, final_cost}
+        global EXP
+        global MIN_LEVEL
+        global PAYMENT
+        EXP = exp
+        MIN_LEVEL = level
+        PAYMENT = final_cost

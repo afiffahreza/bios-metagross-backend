@@ -1,15 +1,17 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import json
-
+from knowledge import *
 with open("data.json") as read_file:
     data = json.load(read_file)
+
 
 class Account(BaseModel):
     id: int
     name: str
     exp: int
     balance: int
+
 
 class Project(BaseModel):
     id: int
@@ -24,6 +26,7 @@ class Project(BaseModel):
     prototipe: str
     requirement: int
 
+
 class ProjectCreate(BaseModel):
     name: str
     description: str
@@ -33,6 +36,7 @@ class ProjectCreate(BaseModel):
     prototipe: str
     requirement: int
 
+
 class Course(BaseModel):
     id: int
     name: str
@@ -41,16 +45,20 @@ class Course(BaseModel):
     price: int
     description: str
 
+
 app = FastAPI()
+
 
 @app.get("/")
 async def root():
     return {"message": "Tes"}
 
+
 @app.get("/account")
 async def read_account():
     if data['account']:
         return data['account']
+
 
 @app.get("/account/{account_id}")
 async def read_account_by_id(account_id: int):
@@ -59,10 +67,12 @@ async def read_account_by_id(account_id: int):
             return account_data
     raise HTTPException(status_code=404, detail=f'Not Found')
 
+
 @app.get("/projects")
 async def read_projects():
     if data['project']:
         return data['project']
+
 
 @app.get("/projects/{project_id}")
 async def read_project_by_id(project_id: int):
@@ -71,18 +81,27 @@ async def read_project_by_id(project_id: int):
             return project_data
     raise HTTPException(status_code=404, detail=f'Not Found')
 
+
 @app.post("/projects")
 async def create_project(project: ProjectCreate):
     id = 1
+
     if len(data['project']) > 0:
         id += data['project'][len(data['project'])-1]['id']
     project_dict = project.dict()
+
+    # KBSHIT
+    engine = ProjectCost()
+    engine.reset(tipe=project_dict['jenis'], time=project_dict['waktu'], tech=project_dict['tools'],
+                 prototipe=project_dict['prototipe'], n_req=project_dict['requirement'])
+    engine.run()
+
     res = {
         "id": id,
         "name": project_dict['name'],
-        "exp": 30, #KBS
-        "minlevel": 5, #KBS
-        "payment": 1000000000, #KBS
+        "exp": EXP,  # KBS
+        "minlevel": MIN_LEVEL,  # KBS
+        "payment": PAYMENT,  # KBS
         "description": project_dict['description'],
         "jenis": project_dict['jenis'],
         "waktu": project_dict['waktu'],
@@ -99,10 +118,12 @@ async def create_project(project: ProjectCreate):
         return res
     raise HTTPException(status_code=400, detail=f'Bad request')
 
+
 @app.get("/courses")
 async def read_courses():
     if data['course']:
         return data['course']
+
 
 @app.get("/courses/{course_id}")
 async def read_course_by_id(course_id: int):
