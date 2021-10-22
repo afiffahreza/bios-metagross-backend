@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import json
 from knowledge import *
+
 with open("data.json") as read_file:
     data = json.load(read_file)
 
@@ -20,7 +21,7 @@ class Project(BaseModel):
     minlvl: int
     payment: int
     description: str
-    jenis: int
+    jenis: str
     waktu: int
     tools: str
     prototipe: str
@@ -30,7 +31,7 @@ class Project(BaseModel):
 class ProjectCreate(BaseModel):
     name: str
     description: str
-    jenis: int
+    jenis: str
     waktu: int
     tools: str
     prototipe: str
@@ -95,6 +96,7 @@ async def create_project(project: ProjectCreate):
     engine.reset(tipe=project_dict['jenis'], time=project_dict['waktu'], tech=project_dict['tools'],
                  prototipe=project_dict['prototipe'], n_req=project_dict['requirement'])
     engine.run()
+    print(EXP, MIN_LEVEL, PAYMENT)
 
     res = {
         "id": id,
