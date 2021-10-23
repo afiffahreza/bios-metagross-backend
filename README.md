@@ -1,4 +1,4 @@
-# BIOS Frontend Repository
+# BIOS Backend Repository
 ## Team Metagross
     Afif Fahreza / 18219058
     Thomas Ferdinand Martin / 13519099
